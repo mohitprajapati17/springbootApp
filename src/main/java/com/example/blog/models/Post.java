@@ -15,7 +15,7 @@ public class Post {
     public String content;
 
     @ManyToOne
-    public User author;
+    public Users author;
     public LocalDateTime createdAt;
     public LocalDateTime  updatedAt;
 
