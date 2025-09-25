@@ -1,0 +1,62 @@
+package com.example.blog.service;
+import javax.crypto.SecretKey;
+
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.crypto.KeyGenerator;
+
+public class JwtService {
+    private String SecretKey;
+
+    JwtService(){
+        SecretKey=generateSecretkey();
+    }
+
+    public String generateSecretkey(){
+        try{
+            KeyGenerator keyGenerator=KeyGenerator.getInstance("HmacSHA256");
+
+            SecretKey secretKey =keyGenerator.generateKey();
+            return Base64.getEncoder().encodeToString(secretKey.getEncoded());
+        }
+        catch(NoSuchAlgorithmException e){
+            throw  new RuntimeException("Error generating secretkey",e);  //doubt
+        }
+    }
+
+    public  String generateToken(String username){
+        Map<String,Object> claims=new HashMap<>();
+        return Jwts.builder().setClaims(claims).setSubject(username).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis()+1000*60*60*24*4)).signWith(getKey(),SignatureAlgorithm.HS256).compact();
+
+    }
+
+    public Key getKey(){
+        byte[] keyBytes=Decoders.BASE64.decode(SecretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String extractUsername(String token){
+        return extractClaim(token,Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, java.util.function.Function<Claims, T> claimsResolver){
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token){
+        return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody();
+    }
+}
