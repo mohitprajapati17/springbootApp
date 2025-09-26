@@ -1,15 +1,18 @@
 package com.example.blog.service;
 import javax.crypto.SecretKey;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Date;
+import java.util.Date;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.HashMap;
@@ -17,6 +20,7 @@ import java.util.Map;
 
 import javax.crypto.KeyGenerator;
 
+@Service
 public class JwtService {
     private String SecretKey;
 
@@ -59,4 +63,20 @@ public class JwtService {
     private Claims extractAllClaims(String token){
         return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody();
     }
+
+    public boolean validateToken(String token , UserDetails userDetails){
+        final String userName=extractUsername(token);
+        return(userName.equals(userDetails.getUsername())&&!isTokenExpired(token));
+
+
+    }
+
+    public boolean isTokenExpired(String token){
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token){
+        return extractClaim(token, Claims::getExpiration);
+    }
+
 }

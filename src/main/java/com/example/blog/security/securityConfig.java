@@ -48,8 +48,8 @@ public class securityConfig {
         .authorizeHttpRequests(request->request
          .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
          .requestMatchers("login").permitAll()
-         .requestMatchers("register").permitAll()
-         .requestMatchers("/**").authenticated()
+         .requestMatchers("signup").permitAll()
+         .anyRequest().authenticated()
         );
 
         http.authenticationProvider(authProvider());

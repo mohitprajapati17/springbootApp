@@ -8,9 +8,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.example.blog.models.Users;
 import com.example.blog.repo.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+@Service
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired

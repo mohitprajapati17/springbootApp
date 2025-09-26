@@ -4,6 +4,8 @@ import com.example.blog.models.Post;
 import com.example.blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,9 @@ public class PostController {
 
     @GetMapping("posts")
     ResponseEntity<List<Post >> showPosts(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Authenticated: " + auth.isAuthenticated());
+        System.out.println("Authorities: " + auth.getAuthorities());
         return ResponseEntity.ok(postService.shows());
     }
 
@@ -33,6 +38,7 @@ public class PostController {
         return ResponseEntity.ok(postService.save(post));
     }
 
+
     @PostMapping("update")
     ResponseEntity<Post>  UpdatePost(@RequestBody Post post){
         return ResponseEntity.ok(postService.update(post));
@@ -42,7 +48,7 @@ public class PostController {
     ResponseEntity<Post> DeletePost(@PathVariable Long id){
         return ResponseEntity.ok(postService.delete(id));
     }
-    
+
 
 
     
