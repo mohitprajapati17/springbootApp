@@ -1,6 +1,7 @@
 package com.example.blog.models;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
  * Maps to the 'post' table in the database
  */
 @Entity
+@Data  // Lombok annotation that generates getters, setters, toString, equals, and hashCode
 public class Post {
 
     // Primary key with auto-generated ID
