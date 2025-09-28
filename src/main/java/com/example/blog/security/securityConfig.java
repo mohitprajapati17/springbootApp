@@ -1,7 +1,6 @@
 package com.example.blog.security;
 
 
-import java.net.http.HttpClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -70,8 +69,8 @@ public class securityConfig {
         http.csrf(customizer -> customizer.disable())  // Disable CSRF for REST API
         .authorizeHttpRequests(request -> request
          .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow OPTIONS requests for CORS
-         .requestMatchers("login").permitAll()                    // Allow login endpoint without authentication
-         .requestMatchers("r").permitAll()                        // Allow registration endpoint without authentication
+         .requestMatchers("/login").permitAll()                    // Allow login endpoint without authentication
+         .requestMatchers("/signup").permitAll()                        // Allow registration endpoint without authentication
          .requestMatchers("/**").authenticated()                  // Require authentication for all other endpoints
         );
 

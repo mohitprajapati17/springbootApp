@@ -7,6 +7,7 @@ import com.example.blog.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,24 +48,40 @@ public class PostService  {
     /**
      * Save a new blog post to the database
      * @param post - The post object to save
+     * @param principal - The authentication principal to get the current user
      * @return The saved post object with generated ID
      */
-    public Post save(Post post){
-        // Use repository to save new post (insert operation)
+    public Post save(Post post, Principal principal){
+        // Get username from the authentication principal
+        String username = principal.getName();
+
+        // Find the user by ID (assuming username is used as ID)
+        Users author = userRepository.findById(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Set the persisted author to ensure proper relationship
+        post.setAuthor(author);
+
+        // Set timestamps for tracking when post was created/updated
+        if (post.getCreatedAt() == null) post.setCreatedAt(LocalDateTime.now());
+        post.setUpdatedAt(LocalDateTime.now());
+
+        // Save the updated post (update operation)
         return postRepository.save(post);
      }
      
     /**
      * Update an existing blog post
      * @param post - The post object with updated data
+     * @param principal - The authentication principal to get the current user
      * @return The updated post object
      */
-    public Post update(Post post){
-        // Get username from the post's author
-        String username = post.getAuthor().getUsername();
+    public Post update(Post post, Principal principal){
+        // Get username from the authentication principal
+        String username = principal.getName();
         
         // Find the user by ID (assuming username is used as ID)
-        Users author = userRepository.findById(Long.valueOf(username))
+        Users author = userRepository.findById(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Set the persisted author to ensure proper relationship

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -57,24 +58,26 @@ public class PostController {
      * POST endpoint to create a new blog post
      * URL: /post
      * @param post - The post object containing post data from request body
+     * @param principal - The authentication principal to get the current user
      * @return ResponseEntity containing the created post
      */
     @PostMapping("post")
-    ResponseEntity<Post> createPost(@RequestBody Post post){
+    ResponseEntity<Post> createPost(@RequestBody Post post, Principal principal){
         // Call service to save new post and return as HTTP 200 OK response
-        return ResponseEntity.ok(postService.save(post));
+        return ResponseEntity.ok(postService.save(post, principal));
     }
 
     /**
      * POST endpoint to update an existing blog post
      * URL: /update
      * @param post - The post object with updated data from request body
+     * @param principal - The authentication principal to get the current user
      * @return ResponseEntity containing the updated post
      */
     @PostMapping("update")
-    ResponseEntity<Post> UpdatePost(@RequestBody Post post){
+    ResponseEntity<Post> UpdatePost(@RequestBody Post post, Principal principal){
         // Call service to update existing post and return as HTTP 200 OK response
-        return ResponseEntity.ok(postService.update(post));
+        return ResponseEntity.ok(postService.update(post, principal));
     }
 
     /**
