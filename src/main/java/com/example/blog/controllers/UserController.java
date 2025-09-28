@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 
-@CrossOrigin("*")
+
 public class UserController {
 
     // Inject AuthenticationManager to handle user authentication
@@ -43,7 +43,7 @@ public class UserController {
      * @param user - User object containing registration data from request body
      * @return ResponseEntity containing the created user
      */
-    @PostMapping("signup")
+    @PostMapping("/signup")
     ResponseEntity<Users> register(@RequestBody Users user ){
         // Call service to save new user (password will be encrypted) and return as HTTP 200 OK response
         return ResponseEntity.ok(userService.save(user));
@@ -55,7 +55,7 @@ public class UserController {
      * @param users - User object containing login credentials from request body
      * @return JWT token string if authentication successful, error message otherwise
      */
-    @PostMapping("login")
+    @PostMapping("/login")
     public String login(@RequestBody Users users){
         try{
             // Create authentication token with username and password
