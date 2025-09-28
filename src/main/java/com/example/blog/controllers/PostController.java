@@ -44,11 +44,11 @@ public class PostController {
 
     /**
      * GET endpoint to retrieve a specific blog post by ID
-     * URL: /post{id}
+     * URL: /post/{id}
      * @param id - The ID of the post to retrieve
      * @return ResponseEntity containing the requested post
      */
-    @GetMapping("post{id}")
+    @GetMapping("post/{id}")
     ResponseEntity<Post> showPost(@PathVariable Long id){
         // Call service to find post by ID and return as HTTP 200 OK response
         return ResponseEntity.ok(postService.show(id));
@@ -69,24 +69,25 @@ public class PostController {
 
     /**
      * POST endpoint to update an existing blog post
-     * URL: /update
+     * URL: /update/{id}
      * @param post - The post object with updated data from request body
      * @param principal - The authentication principal to get the current user
+     * @param id - The ID of the post to update
      * @return ResponseEntity containing the updated post
      */
-    @PostMapping("update")
-    ResponseEntity<Post> UpdatePost(@RequestBody Post post, Principal principal){
+    @PostMapping("update/{id}")
+    ResponseEntity<Post> UpdatePost(@RequestBody Post post, Principal principal, @PathVariable Long id){
         // Call service to update existing post and return as HTTP 200 OK response
-        return ResponseEntity.ok(postService.update(post, principal));
+        return ResponseEntity.ok(postService.update(post, principal, id));
     }
 
     /**
      * GET endpoint to delete a blog post by ID
-     * URL: /delete{id}
+     * URL: /delete/{id}
      * @param id - The ID of the post to delete
      * @return ResponseEntity containing the deleted post
      */
-    @GetMapping("delete{id}")
+    @GetMapping("delete/{id}")
     ResponseEntity<Post> DeletePost(@PathVariable Long id){
         // Call service to delete post by ID and return deleted post as HTTP 200 OK response
         return ResponseEntity.ok(postService.delete(id));

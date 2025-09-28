@@ -76,23 +76,27 @@ public class PostService  {
      * @param principal - The authentication principal to get the current user
      * @return The updated post object
      */
-    public Post update(Post post, Principal principal){
+    public Post update(Post post, Principal principal,Long id){
         // Get username from the authentication principal
         String username = principal.getName();
-        
+        Post existing = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id " + id));
+        existing.setTitle(post.getTitle());
+        existing.setContent(post.getContent());
+
         // Find the user by ID (assuming username is used as ID)
         Users author = userRepository.findById(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Set the persisted author to ensure proper relationship
-        post.setAuthor(author);
+        existing.setAuthor(author);
 
         // Set timestamps for tracking when post was created/updated
-        if (post.getCreatedAt() == null) post.setCreatedAt(LocalDateTime.now());
-        post.setUpdatedAt(LocalDateTime.now());
+        if (existing.getCreatedAt() == null) existing.setCreatedAt(LocalDateTime.now());
+        existing.setUpdatedAt(LocalDateTime.now());
         
         // Save the updated post (update operation)
-        return postRepository.save(post);
+        return postRepository.save(existing);
     }
 
     /**
